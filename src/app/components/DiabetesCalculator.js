@@ -19,20 +19,23 @@ const DiabetesCalculator = () => {
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
 
-  const handlePersonalInfoChange = (e) => {
-    const { name, value } = e.target;
-    setPersonalInfo(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+const handlePersonalInfoChange = (e) => {
+  const { name, value } = e.target;
+  setPersonalInfo((prev) => {
+    const newState = { ...prev };
+    newState[name] = value;
+    return newState;
+  });
+};
 
-  const handleMedicalDataChange = (e) => {
-    const { name, value } = e.target;
-    setMedicalData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+const handleMedicalDataChange = (e) => {
+  const { name, value } = e.target;
+  setMedicalData((prev) => {
+    const newState = { ...prev };
+    newState[name] = value;
+    return newState;
+  });
+};
   };
 
   const calculateDose = () => {
