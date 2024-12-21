@@ -1,3 +1,4 @@
+```javascript
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -19,36 +20,31 @@ const DiabetesCalculator = () => {
   const [results, setResults] = useState(null);
   const [error, setError] = useState('');
 
-const handlePersonalInfoChange = (e) => {
-  const { name, value } = e.target;
-  setPersonalInfo((prev) => {
-    const newState = { ...prev };
-    newState[name] = value;
-    return newState;
-  });
-};
+  const handlePersonalInfoChange = (e) => {
+    const { name, value } = e.target;
+    setPersonalInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-const handleMedicalDataChange = (e) => {
-  const { name, value } = e.target;
-  setMedicalData((prev) => {
-    const newState = { ...prev };
-    newState[name] = value;
-    return newState;
-  });
-};
+  const handleMedicalDataChange = (e) => {
+    const { name, value } = e.target;
+    setMedicalData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const calculateDose = () => {
     setError('');
-    
-    // Validate personal info
-    if (Object.values(personalInfo).some(value => value === '')) {
+
+    if (Object.values(personalInfo).some((value) => value === '')) {
       setError('Please fill in all personal information');
       return;
     }
 
-    // Validate medical data
-    if (Object.values(medicalData).some(value => value === '')) {
+    if (Object.values(medicalData).some((value) => value === '')) {
       setError('Please fill in all medical data');
       return;
     }
@@ -58,27 +54,21 @@ const handleMedicalDataChange = (e) => {
     const targetBG = parseFloat(medicalData.targetBG);
     const usualDose = parseFloat(medicalData.usualDose);
 
-    // Validate values
     if (tdd <= 0 || currentBG < 0 || targetBG < 0 || usualDose < 0) {
       setError('Please enter valid positive numbers');
       return;
     }
 
     try {
-      // Calculate ISF (1500 rule)
       const isf = 1500 / tdd;
-      
-      // Calculate correction dose
       const bgDiff = currentBG - targetBG;
       const correctionDose = bgDiff / isf;
-      
-      // Calculate total insulin dose
       const totalDose = usualDose + correctionDose;
 
       setResults({
         isf: Math.round(isf * 10) / 10,
         correctionDose: Math.round(correctionDose * 10) / 10,
-        totalDose: Math.round(totalDose * 10) / 10
+        totalDose: Math.round(totalDose * 10) / 10,
       });
     } catch (err) {
       setError('Error in calculations. Please check your inputs.');
@@ -92,7 +82,6 @@ const handleMedicalDataChange = (e) => {
       </CardHeader>
       <CardContent>
         <form className="space-y-6">
-          {/* Personal Information Section */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium mb-4">Personal Information</h3>
             <div className="space-y-4">
@@ -107,7 +96,6 @@ const handleMedicalDataChange = (e) => {
                   placeholder="Enter your name"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">Age</label>
                 <input
@@ -121,7 +109,6 @@ const handleMedicalDataChange = (e) => {
                   max="120"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">Sex</label>
                 <select
@@ -138,8 +125,6 @@ const handleMedicalDataChange = (e) => {
               </div>
             </div>
           </div>
-
-          {/* Medical Data Section */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium mb-4">Medical Data</h3>
             <div className="space-y-4">
@@ -158,7 +143,6 @@ const handleMedicalDataChange = (e) => {
                   step="0.1"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Current Blood Glucose (mg/dL)
@@ -173,7 +157,6 @@ const handleMedicalDataChange = (e) => {
                   min="0"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Target Blood Glucose (mg/dL)
@@ -188,7 +171,6 @@ const handleMedicalDataChange = (e) => {
                   min="0"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium mb-1">
                   Usual Insulin Dose (units)
@@ -206,7 +188,6 @@ const handleMedicalDataChange = (e) => {
               </div>
             </div>
           </div>
-
           <button
             type="button"
             onClick={calculateDose}
@@ -214,13 +195,11 @@ const handleMedicalDataChange = (e) => {
           >
             Calculate Insulin Dose
           </button>
-
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-
           {results && !error && (
             <div className="mt-4 p-4 bg-green-50 rounded space-y-4">
               <div className="border-b pb-2">
@@ -229,23 +208,24 @@ const handleMedicalDataChange = (e) => {
                 <p>Age: {personalInfo.age}</p>
                 <p>Sex: {personalInfo.sex}</p>
               </div>
-              
               <div>
-                <h3 className="font-medium text-green-800">Insulin Sensitivity Factor (ISF)</h3>
+                <h3 className="font-medium text-green-800">
+                  Insulin Sensitivity Factor (ISF)
+                </h3>
                 <p className="text-xl font-bold text-green-600">
                   {results.isf} mg/dL per unit
                 </p>
               </div>
-              
               <div>
                 <h3 className="font-medium text-green-800">Correction Dose</h3>
                 <p className="text-xl font-bold text-green-600">
                   {results.correctionDose} units
                 </p>
               </div>
-              
               <div>
-                <h3 className="font-medium text-green-800">Total Recommended Dose</h3>
+                <h3 className="font-medium text-green-800">
+                  Total Recommended Dose
+                </h3>
                 <p className="text-2xl font-bold text-green-600">
                   {results.totalDose} units
                 </p>
@@ -262,3 +242,4 @@ const handleMedicalDataChange = (e) => {
 };
 
 export default DiabetesCalculator;
+```
